@@ -1,0 +1,25 @@
+name: Smoke (prod compose)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+jobs:
+  smoke-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Run CI smoke test (prod compose)
+        env:
+          # Allow overriding via repository secrets if desired
+          DATABASE_URL: mysql+pymysql://root:password@localhost:3306/studenthub
+        run: |
+          chmod +x scripts/ci_smoke_test.sh
+          ./scripts/ci_smoke_test.sh

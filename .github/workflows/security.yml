@@ -1,0 +1,58 @@
+name: Security Scanning
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly scan on Sunday at 2 AM UTC
+
+jobs:
+  python-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit safety
+
+      - name: Run bandit (code security checks)
+        run: |
+          bandit -r backend -ll -f json -o bandit-report.json || true
+          cat bandit-report.json
+
+      - name: Run safety (dependency vulnerability check)
+        run: |
+          safety check --json || true
+
+  node-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check npm audit
+        working-directory: frontend
+        run: |
+          npm ci
+          npm audit --json || true
+
+  dependabot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable Dependabot
+        run: |
+          echo "Dependabot is configured via .github/dependabot.yml"
+          echo "It will automatically open PRs for dependency updates."

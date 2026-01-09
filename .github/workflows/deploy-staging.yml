@@ -1,0 +1,34 @@
+name: Deploy to Staging
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy via webhook (preferred)
+        if: ${{ secrets.STAGING_DEPLOY_WEBHOOK != '' }}
+        run: |
+          echo "Triggering deployment via webhook"
+          curl -fsS -X POST -H 'Content-Type: application/json' -d '{"ref": "${GITHUB_REF}"}' "${{ secrets.STAGING_DEPLOY_WEBHOOK }}"
+
+      - name: SSH deploy to staging (fallback)
+        if: ${{ secrets.STAGING_DEPLOY_WEBHOOK == '' }}
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+          SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+          IMAGE_TAG: ${{ env.BACKEND_IMAGE || github.sha }}
+        run: |
+          set -e
+          echo "$SSH_PRIVATE_KEY" > /tmp/staging_key
+          chmod 600 /tmp/staging_key
+          # Copy deploy script
+          scp -i /tmp/staging_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null scripts/deploy_to_staging.sh ${SSH_USER}@${SSH_HOST}:/tmp/deploy_to_staging.sh
+          ssh -i /tmp/staging_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${SSH_USER}@${SSH_HOST} 'bash /tmp/deploy_to_staging.sh ${IMAGE_TAG}'

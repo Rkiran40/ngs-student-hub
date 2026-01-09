@@ -1,0 +1,35 @@
+# Example systemd unit for StudentHub backend
+# Copy to: /etc/systemd/system/studenthub.service
+# Replace <app_user> and <app_dir> placeholders with appropriate values
+
+[Unit]
+Description=StudentHub backend (Gunicorn)
+After=network.target
+
+[Service]
+# The unprivileged user that will run the service
+User=<app_user>
+Group=<app_user>
+
+# Working directory (point to repo backend folder)
+WorkingDirectory=/home/<app_user>/apps/studenthub/backend
+
+# Environment file containing secrets and env vars
+EnvironmentFile=/etc/studenthub.env
+
+# Gunicorn executable from your virtualenv (adjust path if different)
+ExecStart=/home/<app_user>/apps/studenthub/backend/.venv/bin/gunicorn -c /home/<app_user>/apps/studenthub/backend/gunicorn_config.py wsgi:app
+
+# Restart on failures
+Restart=on-failure
+RestartSec=5s
+
+# Limit file descriptors
+LimitNOFILE=65536
+
+# Better isolation
+PrivateTmp=true
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
