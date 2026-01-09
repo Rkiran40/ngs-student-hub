@@ -21,9 +21,13 @@ build/
 # ======================
 # Environment files
 # ======================
-.env
-frontend/.env
-backend/.env
+
+.env*
+backend/.env*
+frontend/.env*
+# .env
+# frontend/.env
+# backend/.env
 
 # ======================
 # Flask / Python
