@@ -8,7 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/auth/LoginPage";
 import SignupPage from "./pages/auth/SignupPage";
-import VerifyOTPPage   from "./pages/auth/VerifyOTPPage";
+import VerifyOTPPage from "./pages/auth/VerifyOTPPage";
 import PendingApprovalPage from "./pages/auth/PendingApprovalPage";
 import ForgotUsernamePage from "./pages/auth/ForgotUsernamePage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
@@ -25,6 +25,8 @@ import StudentsPage from "./pages/admin/StudentsPage";
 import UploadsPage from "./pages/admin/UploadsPage";
 import FeedbacksPage from "./pages/admin/FeedbacksPage";
 import TermsOfUse from "./pages/student/terms";
+import PrivacyPolicy from "./pages/student/privacy";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -42,6 +44,8 @@ const App = () => (
             <Route path="/auth/pending-approval" element={<PendingApprovalPage />} />
             <Route path="/auth/forgot-username" element={<ForgotUsernamePage />} />
             <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/terms" element={<TermsOfUse />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/student" element={<StudentLayout />}>
               <Route path="dashboard" element={<StudentDashboardPage />} />
               <Route path="profile" element={<ProfilePage />} />
@@ -49,7 +53,6 @@ const App = () => (
               <Route path="history" element={<HistoryPage />} />
               <Route path="feedback" element={<FeedbackPage />} />
               <Route path="feedback/history" element={<FeedbackHistoryPage />} />
-              <Route path="terms" element={<TermsOfUse/>}/>
             </Route>
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="dashboard" element={<AdminDashboardPage />} />

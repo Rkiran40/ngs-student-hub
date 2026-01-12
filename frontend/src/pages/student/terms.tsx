@@ -23,7 +23,7 @@ export default function TermsOfUse() {
                 <CardContent className="space-y-6 text-sm leading-relaxed">
 
                     <section>
-                        <h2 className="font-semibold text-base">1. Acceptance of Terms</h2>
+                        <h2 className="font-semibold text-base"> Acceptance of Terms</h2>
                         <p>
                             StudentHub (“Platform”) is owned and operated by Nuhvin Global Services
                             Pvt. Ltd. (“Company”, “we”, “our”, “us”).
@@ -36,7 +36,7 @@ export default function TermsOfUse() {
                     </section>
 
                     <section>
-                        <h2 className="font-semibold text-base">2. Eligibility</h2>
+                        <h2 className="font-semibold text-base">Eligibility</h2>
                         <ul className="list-disc pl-6">
                             <li>Registered student, institution representative, or authorized administrator</li>
                             <li>At least 13 years old (or local legal age for digital consent)</li>
@@ -44,7 +44,7 @@ export default function TermsOfUse() {
                     </section>
 
                     <section>
-                        <h2 className="font-semibold text-base">3. User Accounts</h2>
+                        <h2 className="font-semibold text-base">User Accounts</h2>
                         <ul className="list-disc pl-6">
                             <li>Provide accurate and complete registration information</li>
                             <li>Maintain confidentiality of login credentials</li>

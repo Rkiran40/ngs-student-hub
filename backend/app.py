@@ -1,20 +1,17 @@
 import os
-import sys
-from dotenv import load_dotenv  # <-- load .env
-load_dotenv()  # Load environment variables from .env
+from dotenv import load_dotenv
 
-# Ensure proper package resolution when running as __main__
-if __name__ == '__main__' and __package__ is None:
-    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    sys.path.insert(0, repo_root)
-    __package__ = 'backend'
+# Load environment variables from .env
+load_dotenv()
 
 from flask import Flask, jsonify
 from flask_cors import CORS
-from backend.config import Config
-from backend.db import db
-from backend.auth import jwt
-from backend.logging_config import setup_logging
+
+# Package-relative imports
+from .config import Config
+from .db import db
+from .auth import jwt
+from .logging_config import setup_logging
 
 # configure logging as early as possible
 setup_logging()
@@ -26,9 +23,7 @@ def create_app(config_overrides: dict | None = None):
     # Load config from Config class
     app.config.from_object(Config)
 
-    # Override config from environment variables (loaded by dotenv)
-    app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", app.config['SECRET_KEY'])
-    app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY", app.config['JWT_SECRET_KEY'])
+    # Override optional mail settings from env
     app.config['MAIL_USERNAME'] = os.environ.get("MAIL_USERNAME", app.config.get('MAIL_USERNAME'))
     app.config['MAIL_PASSWORD'] = os.environ.get("MAIL_PASSWORD", app.config.get('MAIL_PASSWORD'))
 
@@ -48,8 +43,10 @@ def create_app(config_overrides: dict | None = None):
 
     # Test DB connection early
     from sqlalchemy import create_engine, text
+
     db_uri = app.config.get('SQLALCHEMY_DATABASE_URI')
     print('DB URI at init:', db_uri)
+
     fallback_used = False
     try:
         engine = create_engine(db_uri)
@@ -75,13 +72,13 @@ def create_app(config_overrides: dict | None = None):
     with app.app_context():
         # Import models so SQLAlchemy knows them
         try:
-            print('IMPORTING backend.models')
-            from . import models  # noqa: F401
-            print('IMPORTED backend.models')
-            app.logger.info('Imported backend.models')
+            print('IMPORTING models')
+            from . import models  # ✅ FIXED
+            print('IMPORTED models')
+            app.logger.info('Imported models')
         except Exception as e:
-            print('FAILED to import backend.models', e)
-            app.logger.exception('Failed to import backend.models')
+            print('FAILED to import models', e)
+            app.logger.exception('Failed to import models')
 
         # SQLite fallback: create tables if needed
         if fallback_used and not app.config.get('TESTING', False):
@@ -91,11 +88,11 @@ def create_app(config_overrides: dict | None = None):
             except Exception as e:
                 print('Failed to create tables on fallback SQLite:', e)
 
-        # Seed dev admin (always ensure admin@nuhvin.com exists)
+        # Seed dev admin
         if os.environ.get('DEV_AUTO_SEED', '1').lower() in ('1', 'true', 'yes'):
             try:
-                from backend.models import User, Profile
-                from backend.utils import hash_password
+                from .models import User, Profile
+                from .utils import hash_password
 
                 admin_email = os.environ.get('DEV_ADMIN_EMAIL', 'admin@nuhvin.com')
                 admin_username = os.environ.get('DEV_ADMIN_USERNAME', admin_email)
@@ -176,53 +173,10 @@ def create_app(config_overrides: dict | None = None):
     def healthz():
         return jsonify({"status": "ok"})
 
-    @app.get('/live')
-    def live():
-        return jsonify({"status": "ok"})
-
-    @app.get('/ready')
-    def ready():
-        try:
-            with db.engine.connect() as conn:
-                conn.execute(text("SELECT 1"))
-            return jsonify({"status": "ok"})
-        except Exception:
-            app.logger.exception('Readiness check failed')
-            return jsonify({"status": "error", "message": "db unavailable"}), 500
-
-    # Prometheus metrics
-    try:
-        from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
-        from flask import Response
-
-        @app.get('/metrics')
-        def metrics():
-            try:
-                data = generate_latest()
-                return Response(data, mimetype=CONTENT_TYPE_LATEST)
-            except Exception:
-                return jsonify({'status': 'error', 'message': 'metrics unavailable'}), 500
-    except Exception:
-        app.logger.info('prometheus_client not available; /metrics disabled')
-
-    # Sentry initialization
-    sentry_dsn = os.environ.get('SENTRY_DSN') or app.config.get('SENTRY_DSN')
-    if sentry_dsn:
-        try:
-            import sentry_sdk
-            from sentry_sdk.integrations.flask import FlaskIntegration
-            sentry_sdk.init(dsn=sentry_dsn, integrations=[FlaskIntegration()],
-                            traces_sample_rate=float(os.environ.get('SENTRY_TRACES_SAMPLE_RATE', '0.0')))
-            app.logger.info('Sentry initialized')
-        except Exception:
-            app.logger.exception('Failed to initialize Sentry')
-
     return app
 
 
-
-app = create_app()
-# RAILWAY-SAFE RUN
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
-    create_app().run(host='0.0.0.0', port=port, debug=False)
+    app = create_app()
+    app.run(host='0.0.0.0', port=port, debug=False)

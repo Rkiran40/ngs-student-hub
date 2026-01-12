@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { GraduationCap, Users, FileText, Shield, ArrowRight } from 'lucide-react';
+import TermsOfUse from './student/terms';
+import PrivacyPolicy from './student/privacy';
+
 
 const Index = () => {
   return (
@@ -73,11 +76,44 @@ const Index = () => {
           </div>
         </div>
       </section>
+      {/* <section className='flex'>
+        <TermsOfUse/>
+        <PrivacyPolicy/> 
+        <img src="" alt="" />  
+
+      </section> */}
 
       {/* Footer */}
-      <footer className="border-t border-border py-8">
+      {/* <footer className="border-t border-border py-8">
         <div className="container mx-auto px-4 text-center text-muted-foreground text-sm">
           © 2025 StudentHub. Student Registration & Daily Work Management System.
+        </div>
+
+        <Link to="/student/terms" className="hover:underline">
+          Terms & Conditions
+        </Link>
+        <span>|</span>
+        <Link to="/student/privacy" className="hover:underline">
+          Privacy Policy
+        </Link>
+
+      </footer> */}
+      {/* Footer */}
+      <footer className="border-t border-border py-8">
+        <div className="container mx-auto px-4 text-center text-muted-foreground text-sm space-y-3">
+          <div>
+            © 2026 StudentHub. Student Registration & Daily Work Management System.
+          </div>
+
+          <div className="flex items-center justify-center gap-4">
+            <Link to="/terms" className="hover:underline max-w-6xl">
+              Terms & Conditions
+            </Link>
+            <span>|</span>
+            <Link to="/privacy" className="hover:underline">
+              Privacy Policy
+            </Link>
+          </div>
         </div>
       </footer>
     </div>

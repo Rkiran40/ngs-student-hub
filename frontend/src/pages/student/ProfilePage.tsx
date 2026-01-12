@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -246,7 +246,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -588,9 +588,18 @@ export default function ProfilePage() {
         </form>
       </Form>
       <div>
-        <footer className="pt-2 text-xs text-muted-foreground text-center mt-[10px]">
+        {/* <footer className="pt-2 text-xs text-muted-foreground text-center mt-[10px]">
           <Link to="/student/terms">
             &copy; Terms & Conditions
+          </Link>
+        </footer> */}
+        <footer className="mt-[30px] flex items-center justify-center gap-6 text-xs text-muted-foreground">
+          <Link to="/terms" className="hover:underline">
+            Terms & Conditions
+          </Link>
+          <span>|</span>
+          <Link to="/privacy" className="hover:underline">
+            Privacy Policy
           </Link>
         </footer>
 

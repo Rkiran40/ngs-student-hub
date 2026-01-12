@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: studenthub-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: studenthub_db
+      MYSQL_USER: studenthub
+      MYSQL_PASSWORD: studenthubpw
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend_default
+volumes:
+ mysql_data:
+networks:
+ backend_default:
+ external: true

@@ -232,9 +232,13 @@ export default function DashboardPage() {
         </Card>
       </div>
       <div>
-        <footer className="pt-2 text-xs text-muted-foreground text-center mt-[200px]">
-          <Link to="/student/terms">
-           &copy; Terms & Conditions
+        <footer className="mt-[195px] flex items-center justify-center gap-6 text-xs text-muted-foreground">
+          <Link to="/terms" className="hover:underline">
+            Terms & Conditions
+          </Link>
+          <span>|</span>
+          <Link to="/privacy" className="hover:underline">
+            Privacy Policy
           </Link>
         </footer>
 
