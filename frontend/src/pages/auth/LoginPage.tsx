@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import AuthLayout from '@/components/auth/AuthLayout';
+import TermsOfUse from '../student/terms';
+import PrivacyPolicy from '../student/privacy';
 
 const loginSchema = z.object({
   username: z.string().min(1, 'Username is required'),
@@ -74,81 +76,95 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <AuthLayout title="Welcome back" subtitle="Sign in to your account to continue">
-      {reason === 'inactivity' && (
-        <div className="mb-6 p-4 rounded-lg bg-warning/10 border border-warning/20 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
-          <p className="text-sm text-warning">
-            You were logged out due to inactivity. Please sign in again.
-          </p>
-        </div>
-      )}
+    <>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="username">User ID</Label>
-          <Input
-            id="username"
-            type="text"
-            placeholder="Enter your user id"
-            {...register('username')}
-            className={errors.username ? 'border-destructive' : ''}
-          />
-          {errors.username && (
-            <p className="text-sm text-destructive">{errors.username.message}</p>
-          )}
-        </div>
+      <AuthLayout title="Welcome back" subtitle="Sign in to your account to continue">
 
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
-            <Link
-              to="/auth/forgot-password"
-              className="text-sm text-primary hover:text-primary/80 transition-colors"
-            >
-              Forgot password?
-            </Link>
+        {reason === 'inactivity' && (
+          <div className="mb-6 p-4 rounded-lg bg-warning/10 border border-warning/20 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
+            <p className="text-sm text-warning">
+              You were logged out due to inactivity. Please sign in again.
+            </p>
           </div>
-          <div className="relative">
+        )}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="username">User ID</Label>
             <Input
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Enter your password"
-              {...register('password')}
-              className={errors.password ? 'border-destructive pr-10' : 'pr-10'}
+              id="username"
+              type="text"
+              placeholder="Enter your user id"
+              {...register('username')}
+              className={errors.username ? 'border-destructive' : ''}
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            </button>
+            {errors.username && (
+              <p className="text-sm text-destructive">{errors.username.message}</p>
+            )}
           </div>
-          {errors.password && (
-            <p className="text-sm text-destructive">{errors.password.message}</p>
-          )}
-        </div>
 
-        <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Signing in...
-            </>
-          ) : (
-            'Sign in'
-          )}
-        </Button>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">Password</Label>
+              <Link
+                to="/auth/forgot-password"
+                className="text-sm text-primary hover:text-primary/80 transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter your password"
+                {...register('password')}
+                className={errors.password ? 'border-destructive pr-10' : 'pr-10'}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-sm text-destructive">{errors.password.message}</p>
+            )}
+          </div>
 
-        <p className="text-center text-sm text-muted-foreground">
-          Don't have an account?{' '}
-          <Link to="/auth/signup" className="text-primary font-medium hover:text-primary/80">
-            Sign up
-          </Link>
+          <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              'Sign in'
+            )}
+          </Button>
+
+          <p className="text-center text-sm text-muted-foreground">
+            Don't have an account?{' '}
+            <Link to="/auth/signup" className="text-primary font-medium hover:text-primary/80">
+              Sign up
+            </Link>
+          </p>
+        </form>
+        <p className='text-muted-foreground flex ml-12 text-sm'> &copy; Nuhvin
+          <div className='flex ml-10'>
+            <li>
+              <Link to={"/terms"}>Terms of Use</Link>
+            </li>
+            <li className='ml-10'>
+              <Link to={"/policy"}>PrivacyPolicy</Link>
+            </li>
+          </div>
         </p>
-      </form>
-    </AuthLayout>
+      </AuthLayout>
+    </>
   );
 };
 

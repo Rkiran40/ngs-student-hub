@@ -92,7 +92,7 @@ const ForgotPasswordPage: React.FC = () => {
     // Just proceed to reset step - the backend will validate OTP during reset-password
     setStep('reset');
     toast({
-      title: 'Code entered',
+      title: 'OTP Entered',
       description: 'You can now create your new password.',
     });
   };

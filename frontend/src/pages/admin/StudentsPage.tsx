@@ -124,13 +124,24 @@ export default function StudentsPage() {
     }
   };
 
-  const generateUsername = () => {
-    const prefix = 'ngs';
-    const year = new Date().getFullYear().toString().slice(-2);
-    const random = Math.floor(100 + Math.random() * 900);
-    return `${prefix}${year}${random}`;
-  };
+  // const generateUsername = () => {
+  //   const prefix = 'ngs';
+  //   const year = new Date().getFullYear().toString().slice(-2);
+  //   const random = Math.floor(100 + Math.random() * 900);
+  //   return `${prefix}${year}${random}`;
+  // };
+    const generateUsername = () => {
+  const prefix = 'ngs';
+  const year = new Date().getFullYear().toString().slice(-2);
+  const random = Math.floor(100 + Math.random() * 900);
+  const username = `${prefix}${year}${random}`;
 
+  if (username.length !== 8) {
+    throw new Error("Username length is not 8 characters!");
+  }
+
+  return username;
+};
   const getInitials = (name?: string) => {
     if (!name) return '';
     const parts = name.trim().split(/\s+/);
